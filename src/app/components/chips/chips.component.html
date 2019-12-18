@@ -1,0 +1,34 @@
+<mat-chip-list #chipList
+               aria-label="Thing selection">
+    <mat-chip *ngFor="let filter of filters"
+              class="my-chip"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(filter)">
+        {{filter}}
+        <!-- {{filter.name}}: {{filter.value}} -->
+        <mat-icon matChipRemove
+                  *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+</mat-chip-list>
+
+
+<ul>
+    <li *ngFor="let thing of displayThings">
+        {{thing.name}}
+    </li>
+</ul>
+
+<label for="">
+    You searched:
+    <input type="text"
+           style="width: 250px;"
+           (change)="updateFilters($event.target.value)"
+           [value]="allFilters">
+</label>
+<button (click)="clearFilters()">Clear</button>
+
+<br>
+
+<button mat-button
+        (click)="goToOther()">Go to {{otherCategory}}</button>
