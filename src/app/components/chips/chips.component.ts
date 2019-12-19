@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, KeyValueDiffers } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,7 @@ export class ChipsComponent implements OnInit {
     otherCategory: string;
     displayThings: Thing[];
 
-    filters: any[];
+    filters: string[];
     allFilters: string;
 
     things = {
@@ -51,8 +51,19 @@ export class ChipsComponent implements OnInit {
         });
 
         this.route.queryParams.subscribe(queryParams => {
+            console.log(queryParams);
+
             this.displayThings = this.things[this.category];
-            this.filters = Object.entries(queryParams).map(([key, value]) => `${key}=${value}`);
+            this.filters = Object.entries(queryParams).flatMap(([key, value]) => {
+
+                if (Array.isArray(value)) {
+                    return value.map(v => `${key}=${v}`);
+                }
+
+                return `${key}=${value}`;
+            });
+            console.log(this.filters);
+
             this.allFilters = this.filters.join('&');
 
             this.order = queryParams.order;
@@ -63,7 +74,7 @@ export class ChipsComponent implements OnInit {
             }
 
             if (queryParams.color) {
-                this.displayThings = this.displayThings.filter((thing: Thing) => thing.color === queryParams.color);
+                this.displayThings = this.displayThings.filter((thing: Thing) => queryParams.color.indexOf(thing.color) > -1);
             }
         });
     }
@@ -84,7 +95,16 @@ export class ChipsComponent implements OnInit {
 
         const newParams: any = {};
         const splitFilters = newFilterString.split('&').map(filter => filter.split('='));
-        splitFilters.forEach(param => { newParams[param[0]] = param[1]; });
+        splitFilters.forEach(([key, value]) => {
+            if (newParams[key]) {
+                newParams[key] = [newParams[key], value].flat(1);
+            } else {
+                newParams[key] = value;
+            }
+        });
+
+        console.log(newParams);
+
 
         this.router.navigate(['.'], { relativeTo: this.route, queryParams: newParams });
     }

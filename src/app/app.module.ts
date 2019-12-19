@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
         BrowserModule,
         FormsModule,
         RouterModule.forRoot([
-            { path: '', redirectTo: 'chips', pathMatch: 'full' },
+            { path: '', redirectTo: 'chips/fruits', pathMatch: 'full' },
             { path: 'chips/:category', component: ChipsComponent }
         ]),
         MatChipsModule,
