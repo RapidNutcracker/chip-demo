@@ -90,15 +90,18 @@ export class ChipsComponent implements OnInit {
 
     updateFilters(newFilterString: string) {
 
-        const newParams: any = {};
         const splitFilters = newFilterString.split('&').map(filter => filter.split('='));
-        splitFilters.forEach(([key, value]) => {
-            if (newParams[key]) {
-                newParams[key] = [newParams[key], value].flat(1);
+        const newParams = splitFilters.reduce((acc, filter) => {
+            const [key, value] = filter;
+
+            if (acc[key]) {
+                acc[key] = [acc[key], value].flat(1);
             } else {
-                newParams[key] = value;
+                acc[key] = value;
             }
-        });
+
+            return acc;
+        }, {});
 
         console.log(newParams);
 
