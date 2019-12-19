@@ -51,8 +51,6 @@ export class ChipsComponent implements OnInit {
         });
 
         this.route.queryParams.subscribe(queryParams => {
-            console.log(queryParams);
-
             this.displayThings = this.things[this.category];
             this.filters = Object.entries(queryParams).flatMap(([key, value]) => {
 
@@ -62,7 +60,6 @@ export class ChipsComponent implements OnInit {
 
                 return `${key}=${value}`;
             });
-            console.log(this.filters);
 
             this.allFilters = this.filters.join('&');
 
